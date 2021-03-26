@@ -9,7 +9,11 @@ import dictionary from "./virtualKeyboardDictionary";
 import SideNav from "./SideNav";
 import diffCalculator from "./diffCalculator";
 class HomePage extends Component {
-  state = { imgHolder: img1, keyboard: true, corrections: [["", ""]] };
+  state = {
+    imgHolder: img1,
+    keyboard: true,
+    corrections: [["Exmple", "Example"]],
+  };
 
   constructor(props) {
     super(props);
@@ -21,21 +25,23 @@ class HomePage extends Component {
     this.checkSentence = this.checkSentence.bind(this);
   }
   componentDidMount() {
-    this.calculateDifference(
-      "Hi I am Shreyas Nikam. I am a Front End Engineer.",
-      "Hello."
-    );
+    // this.calculateDifference(
+    //   "Hi I am Shreyas Nikam. I am a Front End Engineer.",
+    //   "Hello."
+    // );
   }
   replaceContent(input, target, count) {
     let result = document.getElementById("content").value;
-    let temp = result.slice(0, count);
-    console.log("before: ", temp);
-    temp += target;
-    console.log("replace: ", temp);
+    document.getElementById("content").value = result.replace(input, target);
+    console.log(input, target);
+    //     let temp = result.slice(0, count);
+    // console.log("before: ", temp);
+    // temp += target;
+    // console.log("replace: ", temp);
 
-    temp += result.slice(count + input.length, result.length);
-    console.log("after: ", temp);
-    document.getElementById("content").value = temp;
+    // temp += result.slice(count + input.length, result.length);
+    // console.log("after: ", temp);
+    // document.getElementById("content").value = temp;
   }
   calculateDifference(input, target) {
     let corrections = [];
@@ -73,11 +79,11 @@ class HomePage extends Component {
     this.setState({ keyboard: !this.state.keyboard });
   }
   checkSentence() {
+    this.setState({ isLoading: true });
     let sentence = document.getElementById("content").value;
-    console.log(typeof sentence);
+    // console.log(typeof sentence);
     fetch("http://localhost:9696/suggest", {
       method: "POST",
-
       body: JSON.stringify({
         input_sentence: sentence,
       }),
@@ -91,6 +97,7 @@ class HomePage extends Component {
         console.log(res);
         this.setState({ corrections: [[sentence, res["output"]]] });
         console.log(this.state);
+        this.setState({ isLoading: false });
       });
   }
   onChangeContent(e) {
@@ -206,7 +213,7 @@ class HomePage extends Component {
             <div className="doc_title m-3 suggestions_title">
               All suggestions
             </div>
-
+            {this.state.isLoading ? <>Loading...</> : <></>}
             <div className="suggestions_content" id="suggestions_content">
               {this.state.corrections.map((e, i) => (
                 <SuggestionCard
