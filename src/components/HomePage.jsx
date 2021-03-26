@@ -26,6 +26,7 @@ class HomePage extends Component {
     this.calculateDifference = this.calculateDifference.bind(this);
     this.deleteSuggestionCard = this.deleteSuggestionCard.bind(this);
     this.checkSentence = this.checkSentence.bind(this);
+    this.addToDictionary = this.addToDictionary.bind(this);
   }
   componentDidMount() {
     Firebase.initializeApp(config);
@@ -156,20 +157,21 @@ class HomePage extends Component {
   openSideNav() {
     document.getElementById("mySidenav").style.width = "250px";
   }
-  deleteSuggestionCard(id, sentence, flag) {
+  deleteSuggestionCard(id) {
     // document
     //   .getElementById("suggestions_content")
     //   .removeChild(document.getElementById(id));
-    if (flag === 1) {
-      this.database
-        .ref("/sentences/")
-        .push(sentence, (err) => console.log(err));
-    }
+
     let temp = parseInt(id.replace("suggestion_", ""));
     console.log(temp);
     let corrections = this.state.corrections;
     corrections.splice(temp, 1);
     this.setState({ corrections: corrections });
+  }
+  addToDictionary(id, sentence) {
+    console.log("hello", id, sentence);
+    this.database.ref("/sentences/").push(sentence, (err) => console.log(err));
+    this.deleteSuggestionCard(id);
   }
   render() {
     return (
@@ -257,6 +259,7 @@ class HomePage extends Component {
                   id={"suggestion_" + i}
                   deleteSuggestionCard={this.deleteSuggestionCard}
                   replaceContent={this.replaceContent}
+                  addToDictionary={this.addToDictionary}
                 />
               ))}
               {this.state.corrections.length === 0 ? (

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { MdArrowForward, MdClear } from "react-icons/md";
 import { FcCheckmark } from "react-icons/fc";
+import { BiBookAdd } from "react-icons/bi";
 class SuggestionCard extends Component {
   state = {};
   constructor(props) {
@@ -14,7 +15,7 @@ class SuggestionCard extends Component {
       this.props.index
     );
     // document.getElementById("content").value = temp;
-    this.props.deleteSuggestionCard(this.props.id, "", 0);
+    this.props.deleteSuggestionCard(this.props.id);
   }
   render() {
     return (
@@ -37,6 +38,16 @@ class SuggestionCard extends Component {
             </div>
             <div className="col-sm-4">
               <div className="float-right expansion_icon">
+                <BiBookAdd
+                  size={20}
+                  fill="blue"
+                  data-toggle="tooltip"
+                  title="Add to Dictionary"
+                  className="mr-2"
+                  onClick={() =>
+                    this.props.addToDictionary(this.props.id, this.props.title)
+                  }
+                />
                 <FcCheckmark
                   size={20}
                   data-toggle="tooltip"
@@ -49,13 +60,7 @@ class SuggestionCard extends Component {
                   fill="red"
                   data-toggle="tooltip"
                   title="Discard suggestion"
-                  onClick={() =>
-                    this.props.deleteSuggestionCard(
-                      this.props.id,
-                      this.props.title,
-                      1
-                    )
-                  }
+                  onClick={() => this.props.deleteSuggestionCard(this.props.id)}
                 />
               </div>
             </div>
