@@ -20,8 +20,6 @@ class HomePage extends Component {
   database = null;
   constructor(props) {
     super(props);
-    // Firebase.initializeApp(config);
-    this.database = Firebase.database();
     this.onChangeContent = this.onChangeContent.bind(this);
     this.onEditTitle = this.onEditTitle.bind(this);
     this.toggleKeyboard = this.toggleKeyboard.bind(this);
@@ -30,6 +28,8 @@ class HomePage extends Component {
     this.checkSentence = this.checkSentence.bind(this);
   }
   componentDidMount() {
+    Firebase.initializeApp(config);
+    this.database = Firebase.database();
     // this.calculateDifference(
     //   "Hi I am Shreyas Nikam. I am a Front End Engineer.",
     //   "Hello."
@@ -41,7 +41,7 @@ class HomePage extends Component {
     let result = document.getElementById("content").value;
     document.getElementById("content").value = result.replace(
       input,
-      target.strip()
+      target.trim()
     );
     console.log(input, target);
     //     let temp = result.slice(0, count);
@@ -90,25 +90,44 @@ class HomePage extends Component {
   }
   checkSentence() {
     this.setState({ isLoading: true });
+    this.setState({ corrections: [] });
     let sentence = document.getElementById("content").value;
+    // "चरवाहे ने दीनानाथ जी धन्यवाद काे कहा। सभियो अपने-अपने घर चले गए। चीत्रों का निरीक्षण कराे आैर उनके नाम बताओ। शब्द सूनो और समान ध्वनि पहचानो।";
+    let sentences = sentence
+      .replace(/(\.+|।|\!|\?)(\"*|\'*|\)*|}*|]*)(\s|\n|\r|\r\n)/gm, "$1$2|")
+      .split("|");
     // console.log(typeof sentence);
-    fetch("http://localhost:9696/suggest", {
-      method: "POST",
-      body: JSON.stringify({
-        input_sentence: sentence,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        this.setState({ corrections: [[sentence, res["output"]]] });
-        console.log(this.state);
-        this.setState({ isLoading: false });
-      });
+    // let corrections = [];
+    for (let i = 0; i < sentences.length; i++) {
+      this.setState({ isLoading: true });
+      fetch("http://localhost:9696/suggest", {
+        method: "POST",
+        body: JSON.stringify({
+          input_sentence: sentences[i],
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          // console.log(res);
+          // this.setState({ corrections: [...corrections, [sentence, res["output"]]] });
+          // console.log(this.state);
+          this.setState({
+            corrections: [
+              ...this.state.corrections,
+              [sentences[i], res["output"]],
+            ],
+          });
+          // this.state.corrections.push([sentences[i], res["output"]]);
+          console.log(res["output"]);
+          console.log(i);
+          this.setState({ isLoading: false });
+        });
+    }
+    console.log(this.state.corrections);
   }
   onChangeContent(e) {
     e.preventDefault();
