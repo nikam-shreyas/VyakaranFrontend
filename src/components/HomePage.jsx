@@ -8,15 +8,20 @@ import { RiMenuUnfoldLine } from "react-icons/ri";
 import dictionary from "./virtualKeyboardDictionary";
 import SideNav from "./SideNav";
 import diffCalculator from "./diffCalculator";
+import Firebase from "firebase";
+import config from "./config";
+
 class HomePage extends Component {
   state = {
     imgHolder: img1,
     keyboard: true,
     corrections: [["Exmple", "Example"]],
   };
-
+  database = null;
   constructor(props) {
     super(props);
+    // Firebase.initializeApp(config);
+    this.database = Firebase.database();
     this.onChangeContent = this.onChangeContent.bind(this);
     this.onEditTitle = this.onEditTitle.bind(this);
     this.toggleKeyboard = this.toggleKeyboard.bind(this);
@@ -29,10 +34,15 @@ class HomePage extends Component {
     //   "Hi I am Shreyas Nikam. I am a Front End Engineer.",
     //   "Hello."
     // );
+    // // writeData("sentence example");
+    //
   }
   replaceContent(input, target, count) {
     let result = document.getElementById("content").value;
-    document.getElementById("content").value = result.replace(input, target);
+    document.getElementById("content").value = result.replace(
+      input,
+      target.strip()
+    );
     console.log(input, target);
     //     let temp = result.slice(0, count);
     // console.log("before: ", temp);
@@ -127,11 +137,15 @@ class HomePage extends Component {
   openSideNav() {
     document.getElementById("mySidenav").style.width = "250px";
   }
-  deleteSuggestionCard(id) {
+  deleteSuggestionCard(id, sentence, flag) {
     // document
     //   .getElementById("suggestions_content")
     //   .removeChild(document.getElementById(id));
-
+    if (flag === 1) {
+      this.database
+        .ref("/sentences/")
+        .push(sentence, (err) => console.log(err));
+    }
     let temp = parseInt(id.replace("suggestion_", ""));
     console.log(temp);
     let corrections = this.state.corrections;

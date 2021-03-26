@@ -14,7 +14,7 @@ class SuggestionCard extends Component {
       this.props.index
     );
     // document.getElementById("content").value = temp;
-    this.props.deleteSuggestionCard(this.props.id);
+    this.props.deleteSuggestionCard(this.props.id, "", 0);
   }
   render() {
     return (
@@ -49,7 +49,13 @@ class SuggestionCard extends Component {
                   fill="red"
                   data-toggle="tooltip"
                   title="Discard suggestion"
-                  onClick={() => this.props.deleteSuggestionCard(this.props.id)}
+                  onClick={() =>
+                    this.props.deleteSuggestionCard(
+                      this.props.id,
+                      this.props.title,
+                      1
+                    )
+                  }
                 />
               </div>
             </div>
