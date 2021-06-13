@@ -10,12 +10,18 @@ import SideNav from "./SideNav";
 import diffCalculator from "./diffCalculator";
 import Firebase from "firebase";
 import config from "./config";
-
+import DiffMatchPatch from "diff-match-patch";
+import { MdSpellcheck } from "react-icons/md";
+import Assistant from "./Assistant";
+import { IoIosArrowBack } from "react-icons/io";
 class HomePage extends Component {
   state = {
     imgHolder: img1,
     keyboard: true,
     corrections: [["Exmple", "Example"]],
+    mistakes: 0,
+    mistakesLength: 0,
+    totalLength: 0,
   };
   database = null;
   constructor(props) {
@@ -23,59 +29,23 @@ class HomePage extends Component {
     this.onChangeContent = this.onChangeContent.bind(this);
     this.onEditTitle = this.onEditTitle.bind(this);
     this.toggleKeyboard = this.toggleKeyboard.bind(this);
-    this.calculateDifference = this.calculateDifference.bind(this);
     this.deleteSuggestionCard = this.deleteSuggestionCard.bind(this);
     this.checkSentence = this.checkSentence.bind(this);
-    this.addToDictionary = this.addToDictionary.bind(this);
+    this.openAssistant = this.openAssistant.bind(this);
   }
+
   componentDidMount() {
-    Firebase.initializeApp(config);
-    this.database = Firebase.database();
-    // this.calculateDifference(
-    //   "Hi I am Shreyas Nikam. I am a Front End Engineer.",
-    //   "Hello."
-    // );
-    // // writeData("sentence example");
-    //
+    // Firebase.initializeApp(config);
+    // this.database = Firebase.database();
   }
   replaceContent(input, target, count) {
+    // changes to be stored here.
     let result = document.getElementById("content").value;
-    document.getElementById("content").value = result.replace(
-      input,
-      target.trim()
-    );
-    console.log(input, target);
-    //     let temp = result.slice(0, count);
-    // console.log("before: ", temp);
-    // temp += target;
-    // console.log("replace: ", temp);
+    const dmp = new DiffMatchPatch();
+    result = dmp.patch_apply(count, result);
+    document.getElementById("content").value = result[0];
+  }
 
-    // temp += result.slice(count + input.length, result.length);
-    // console.log("after: ", temp);
-    // document.getElementById("content").value = temp;
-  }
-  calculateDifference(input, target) {
-    let corrections = [];
-    let difference = diffCalculator(input, target);
-    let count = 0;
-    for (let i = 0; i < difference.length - 1; i++) {
-      if (difference[i][0] === 0) {
-        count += difference[i][1].length;
-      } else if (difference[i][0] === -1) {
-        if (difference[i + 1][0] === 1)
-          corrections.push([difference[i][1], difference[i + 1][1], count]);
-        else corrections.push([difference[i][1], "", count]);
-        i += 1;
-        count += difference[i][1].length;
-      } else {
-        console.log(difference[i][1]);
-        corrections.push(["", difference[i][1], count]);
-        count += 1;
-      }
-    }
-    this.setState({ corrections: corrections });
-    console.log(corrections, this.state.corrections);
-  }
   onEditTitle(e) {
     document.getElementsByTagName("title")[0].innerHTML = e.target.value;
   }
@@ -92,43 +62,62 @@ class HomePage extends Component {
   checkSentence() {
     this.setState({ isLoading: true });
     this.setState({ corrections: [] });
+    let results = "";
     let sentence = document.getElementById("content").value;
-    // "चरवाहे ने दीनानाथ जी धन्यवाद काे कहा। सभियो अपने-अपने घर चले गए। चीत्रों का निरीक्षण कराे आैर उनके नाम बताओ। शब्द सूनो और समान ध्वनि पहचानो।";
     let sentences = sentence
-      .replace(/(\.+|।|\!|\?)(\"*|\'*|\)*|}*|]*)(\s|\n|\r|\r\n)/gm, "$1$2|")
-      .split("|");
-    // console.log(typeof sentence);
+      .replace(/(\.+|।|\!|\?)(\"|\'|\)|}|]*)(\s|\n|\r|\r\n)/gm, "$1$2|")
+      .split("।");
+    // // console.log(typeof sentence);
     // let corrections = [];
+
     for (let i = 0; i < sentences.length; i++) {
-      this.setState({ isLoading: true });
-      fetch("http://localhost:9696/suggest", {
-        method: "POST",
-        body: JSON.stringify({
-          input_sentence: sentences[i],
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          // console.log(res);
-          // this.setState({ corrections: [...corrections, [sentence, res["output"]]] });
-          // console.log(this.state);
-          this.setState({
-            corrections: [
-              ...this.state.corrections,
-              [sentences[i], res["output"]],
-            ],
-          });
-          // this.state.corrections.push([sentences[i], res["output"]]);
-          console.log(res["output"]);
-          console.log(i);
-          this.setState({ isLoading: false });
-        });
+      // fetch("http://f1139ef4bef1.ngrok.io/suggest", {
+      //   method: "POST",
+      //   body: JSON.stringify({
+      //     input_sentence: sentences[i],
+      //   }),
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     "Access-Control-Allow-Origin": "*",
+      //   },
+      // })
+      //   .then((res) => res.json())
+      //   .then((res) => {
+      //     results += res["output"];
+      //   });
     }
-    console.log(this.state.corrections);
+    var test = [
+      "तुम्हें पाठशाला कैसी कैसी लगी? तुम्हें पाठशाला लगी? तुम्हें पाठशाल कैसी लगी?",
+      "तुम्हें पाठशाला कैसी लगी? तुम्हें पाठशाला कैसी लगी? तुम्हें पाठशाला कैसी लगी?",
+    ];
+    const dmp = new DiffMatchPatch();
+    const diff = dmp.patch_make(test[0], test[1]);
+    var diff1 = [diff[0]];
+    var test1 = dmp.patch_apply(diff1, test[0]);
+
+    var diff2 = [diff[1]];
+    test1 = dmp.patch_apply(diff2, test1);
+    console.log(test1);
+    var changes = [];
+    let mistakes = 0;
+    for (let j = 0; j < diff.length; j++) {
+      changes.push([
+        test[0].substr(diff[j].start1, diff[j].length1),
+        test[1].substr(diff[j].start2, diff[j].length2),
+        [diff[j]],
+      ]);
+      mistakes += diff[j].length1;
+    }
+    this.setState(
+      {
+        corrections: changes,
+        mistakes: changes.length,
+        mistakesLength: mistakes,
+        totalLength: sentence.length,
+        isLoading: false,
+      },
+      () => console.log(this.state)
+    );
   }
   onChangeContent(e) {
     e.preventDefault();
@@ -136,42 +125,31 @@ class HomePage extends Component {
     let ct = e.which || e.keyCode;
     temp += dictionary[ct];
     e.target.value = temp;
-    if (temp === "") {
-      document.getElementById("words").innerHTML = "0 words";
-      document.getElementById("characters").innerHTML = "0 characters";
-    } else {
-      let s = temp;
-      s = s.replace(/(^s*)|(s*$)/gi, "");
-      s = s.replace(/[ ]{2,}/gi, " ");
-      s = s.replace(/ +(?= )/g, "");
-      s = s.replace(/\n /, "\n");
-      document.getElementById("words").innerHTML =
-        s.split(" ").filter((e) => {
-          return e !== "";
-        }).length + " words";
-
-      document.getElementById("characters").innerHTML =
-        temp.length + " characters";
-    }
   }
   openSideNav() {
     document.getElementById("mySidenav").style.width = "250px";
   }
-  deleteSuggestionCard(id) {
-    // document
-    //   .getElementById("suggestions_content")
-    //   .removeChild(document.getElementById(id));
-
+  openAssistant() {
+    document.getElementById("myAssistant").style.width = "120px";
+  }
+  deleteSuggestionCard(id, sentence, flag) {
+    if (flag === 1) {
+      this.database
+        .ref("/sentences/")
+        .push(sentence, (err) => console.log(err));
+    }
     let temp = parseInt(id.replace("suggestion_", ""));
     console.log(temp);
     let corrections = this.state.corrections;
     corrections.splice(temp, 1);
     this.setState({ corrections: corrections });
   }
-  addToDictionary(id, sentence) {
-    console.log("hello", id, sentence);
-    this.database.ref("/sentences/").push(sentence, (err) => console.log(err));
-    this.deleteSuggestionCard(id);
+  updateVal() {
+    let val = document.getElementById("content").value;
+    document.getElementById("words").innerHTML =
+      val == "" ? "0 words" : val.split(" ").length + " words";
+    document.getElementById("characters").innerHTML =
+      val.length + " characters";
   }
   render() {
     return (
@@ -223,6 +201,8 @@ class HomePage extends Component {
               rows="8"
               id="content"
               onKeyPress={(e) => this.onChangeContent(e)}
+              onKeyDown={this.updateVal}
+              onChange={this.updateVal}
               className="form-control content m-2 mt-5"
               placeholder="Type or paste (Ctrl+V) your text here."
             />
@@ -245,11 +225,14 @@ class HomePage extends Component {
             </div>
           </div>
           <div className="col-sm-4">
-            <div className="doc_title m-3 suggestions_title">
+            <div className="doc_title mx-3 mt-2 suggestions_title">
               All suggestions
             </div>
             {this.state.isLoading ? <>Loading...</> : <></>}
-            <div className="suggestions_content" id="suggestions_content">
+            <div
+              className="suggestions_content m-1 mt-3"
+              id="suggestions_content"
+            >
               {this.state.corrections.map((e, i) => (
                 <SuggestionCard
                   key={i}
@@ -259,7 +242,6 @@ class HomePage extends Component {
                   id={"suggestion_" + i}
                   deleteSuggestionCard={this.deleteSuggestionCard}
                   replaceContent={this.replaceContent}
-                  addToDictionary={this.addToDictionary}
                 />
               ))}
               {this.state.corrections.length === 0 ? (
@@ -297,7 +279,25 @@ class HomePage extends Component {
               )}
             </div>
           </div>
-
+          <div className="col-sm-1">
+            <Assistant
+              mistakes={this.state.mistakes}
+              mistakesLength={this.state.mistakesLength}
+              totalLength={this.state.totalLength}
+            />
+            <small
+              onClick={this.openAssistant}
+              className="assistant_open float-right"
+            >
+              {" "}
+              <IoIosArrowBack fill="grey" size="20px" />
+              <MdSpellcheck
+                className="assistant_icon"
+                fill="green"
+                size="20px"
+              />
+            </small>
+          </div>
           <iframe
             id="printing-frame"
             name="print_frame"

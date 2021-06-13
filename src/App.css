@@ -9,8 +9,9 @@
 .doc_title {
   font-weight: bold;
   color: black;
-  border: none;
-  outline: 0;
+  border: rgba(128, 128, 128, 0.623);
+  border: 1px solid rgba(128, 128, 128, 0.425);
+  /* outline: 0; */
 }
 
 .doc_title:focus {
@@ -26,21 +27,23 @@
 
 .content {
   cursor: text;
-  border: none;
+  /* border: none; */
   color: black;
-  border-color: none;
-  outline: 0;
+  border-color: rgba(128, 128, 128, 0.37);
+  /* outline: 0; */
   transition-duration: 10000000000000000000s;
-  outline-width: 0;
+  /* outline-width: 0; */
 }
 input[type="text"]:focus,
 textarea:focus {
-  outline: 0;
+  /* outline: 1; */
   border: none;
 }
 
 .suggestions_title {
   color: black;
+  padding: 7px;
+  border-radius: 5px;
 }
 
 .s1 {
@@ -53,6 +56,7 @@ ul.keyboard {
   background-color: #fff;
   border-radius: 5px;
   padding: 0;
+  margin-left: 10px;
   width: 100%;
   height: 50%;
 }
@@ -228,40 +232,169 @@ ul.keyboard {
 .expansion_icon:hover {
   cursor: pointer;
 }
-.cardx:hover .expansion_icon {
-  display: block;
+
+.title_handle {
+  margin-top: 10px;
 }
 
-.cardx:hover .hide {
-  display: block;
+#accuracyMeter {
+  width: 100%;
+  background-color: rgba(128, 128, 128, 0.479);
+  border-radius: 100px;
 }
 
-.rose {
-  background: #ff0000;
+#accuracyBar {
+  width: 1%;
+  height: 2px;
+  border-radius: 100px;
+
+  background-color: red;
 }
 
-.center {
-  display: flex;
-  height: 100%;
+#assistant {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.5, 0.5);
+    opacity: 0.5;
+  }
+  to {
+    transform: scale(2, 2);
+    opacity: 0;
+  }
 }
 
 .circle {
+  border-radius: 50%;
+  background-color: crimson;
   width: 5px;
   height: 5px;
-  background-color: red;
+  position: absolute;
+  margin-top: 10px;
+  margin-right: 10px;
+  opacity: 100;
+}
+.circle2 {
   border-radius: 50%;
-  box-shadow: 0px 0px 1px 1px #ff0000dc;
+  background-color: crimson;
+  width: 11px;
+  height: 11px;
+  position: absolute;
+  margin-top: 7px;
+  margin-left: -3px;
+  margin-right: 10px;
+  opacity: 100;
+  animation: scaleIn 2s infinite cubic-bezier(0.36, 0.11, 0.89, 0.32);
 }
 
-.pulse {
-  animation: pulse-animation 2s infinite;
+.error_text {
+  background-color: crimson;
+  color: white;
+  border-radius: 3px;
+  padding: 5px;
+  font-weight: bold;
 }
 
-@keyframes pulse-animation {
-  0% {
-    box-shadow: 0 0 0 0px rgba(255, 56, 56, 0.568);
-  }
-  100% {
-    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
-  }
+.correct_text {
+  background-color: forestgreen;
+  color: white;
+  border-radius: 3px;
+  padding: 5px;
+  font-weight: bold;
+}
+
+.icon:hover {
+  cursor: pointer;
+}
+
+.error_title {
+  color: crimson;
+}
+
+.hide_assistant {
+}
+
+.assistant {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  background-color: white;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 10px;
+  box-shadow: 0 4px 80px 0 lightgray;
+  color: #383838;
+  border-radius: 5px;
+}
+.assistant p {
+  padding: 10px;
+  padding-left: 18px;
+  color: gray;
+  font-size: 12px;
+  border-bottom: 1px solid lightgrey;
+  border-top: 1px solid lightgrey;
+  margin: 10px 10px 10px 10px;
+}
+.assistant hr {
+  margin-left: 10px;
+}
+.assistant li {
+  text-decoration: none;
+  color: #383838;
+  display: block;
+  transition: 0.3s;
+  padding-left: 10px;
+  font-size: 13px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.assistant li:hover {
+  background-color: rgba(211, 211, 211, 0.651);
+}
+
+.assistant .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+.assistant_open {
+  box-shadow: 0 2px 4px 0 lightgray;
+  border-radius: 5px;
+  padding: 5px;
+  margin-top: 20px;
+  margin-right: 10px;
+}
+
+.remark_0 {
+  color: grey;
+}
+
+.remark_1 {
+  color: orange;
+}
+
+.remark_2 {
+  color: orangered;
+}
+
+.remark_3 {
+  color: darkcyan;
+}
+
+.remark_4 {
+  color: royalblue;
+}
+
+.remark_5 {
+  color: forestgreen;
 }
