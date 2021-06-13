@@ -12,18 +12,14 @@ class Assistant extends Component {
   };
   constructor(props) {
     super(props);
-    console.log(props);
   }
   componentWillReceiveProps(props) {
-    console.log("in comwrp", props.totalLength);
     if (props.totalLength > 0) {
       let correct = props.totalLength - props.mistakesLength;
       let remark = "";
       let remark_class = "";
       let temp = correct / props.totalLength;
-      console.log(Math.floor((correct * 10) / props.totalLength));
       let sw = Math.floor((correct * 10) / props.totalLength);
-      console.log(sw);
       switch (sw) {
         case 0:
         case 1:

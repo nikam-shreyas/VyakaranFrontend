@@ -295,7 +295,6 @@ ul.keyboard {
   color: white;
   border-radius: 3px;
   padding: 5px;
-  font-weight: bold;
 }
 
 .correct_text {
@@ -303,7 +302,6 @@ ul.keyboard {
   color: white;
   border-radius: 3px;
   padding: 5px;
-  font-weight: bold;
 }
 
 .icon:hover {

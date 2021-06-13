@@ -64,60 +64,58 @@ class HomePage extends Component {
     this.setState({ corrections: [] });
     let results = "";
     let sentence = document.getElementById("content").value;
-    let sentences = sentence
-      .replace(/(\.+|।|\!|\?)(\"|\'|\)|}|]*)(\s|\n|\r|\r\n)/gm, "$1$2|")
-      .split("।");
     // // console.log(typeof sentence);
     // let corrections = [];
-
-    for (let i = 0; i < sentences.length; i++) {
-      // fetch("http://f1139ef4bef1.ngrok.io/suggest", {
-      //   method: "POST",
-      //   body: JSON.stringify({
-      //     input_sentence: sentences[i],
-      //   }),
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     "Access-Control-Allow-Origin": "*",
-      //   },
-      // })
-      //   .then((res) => res.json())
-      //   .then((res) => {
-      //     results += res["output"];
-      //   });
-    }
-    var test = [
-      "तुम्हें पाठशाला कैसी कैसी लगी? तुम्हें पाठशाला लगी? तुम्हें पाठशाल कैसी लगी?",
-      "तुम्हें पाठशाला कैसी लगी? तुम्हें पाठशाला कैसी लगी? तुम्हें पाठशाला कैसी लगी?",
-    ];
-    const dmp = new DiffMatchPatch();
-    const diff = dmp.patch_make(test[0], test[1]);
-    var diff1 = [diff[0]];
-    var test1 = dmp.patch_apply(diff1, test[0]);
-
-    var diff2 = [diff[1]];
-    test1 = dmp.patch_apply(diff2, test1);
-    console.log(test1);
-    var changes = [];
-    let mistakes = 0;
-    for (let j = 0; j < diff.length; j++) {
-      changes.push([
-        test[0].substr(diff[j].start1, diff[j].length1),
-        test[1].substr(diff[j].start2, diff[j].length2),
-        [diff[j]],
-      ]);
-      mistakes += diff[j].length1;
-    }
-    this.setState(
-      {
-        corrections: changes,
-        mistakes: changes.length,
-        mistakesLength: mistakes,
-        totalLength: sentence.length,
-        isLoading: false,
+    let test = [];
+    this.setState({ isLoading: true });
+    // नमस्तेंे। मैं हो बोर रहा हूँ। ख़ुदा हाफ़ीज़।  ौन जाने? मजेंे करो।
+    fetch("http://0e9fc868b198.ngrok.io/suggest ", {
+      method: "POST",
+      body: JSON.stringify({
+        input_sentence: sentence,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
-      () => console.log(this.state)
-    );
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        results = res["output"];
+        test = [sentence, results];
+        const dmp = new DiffMatchPatch();
+        const diff = dmp.patch_make(test[0], test[1]);
+        console.log();
+        // var diff1 = [diff[0]];
+        // var test1 = dmp.patch_apply(diff1, test[0]);
+        // var diff2 = [diff[1]];
+        // test1 = dmp.patch_apply(diff2, test1);
+        var changes = [];
+        let mistakes = 0;
+        for (let j = 0; j < diff.length; j++) {
+          changes.push([
+            test[0].substr(diff[j].start1, diff[j].length1),
+            test[1].substr(diff[j].start2, diff[j].length2),
+            [diff[j]],
+          ]);
+          mistakes += diff[j].length1;
+        }
+        this.setState(
+          {
+            corrections: changes,
+            mistakes: changes.length,
+            mistakesLength: mistakes,
+            totalLength: sentence.length,
+          },
+          () => console.log(this.state)
+        );
+      })
+      .then(() => {
+        console.log("res", results);
+
+        this.setState({ isLoading: false });
+      });
+    // console.log(results);
   }
   onChangeContent(e) {
     e.preventDefault();
@@ -139,7 +137,6 @@ class HomePage extends Component {
         .push(sentence, (err) => console.log(err));
     }
     let temp = parseInt(id.replace("suggestion_", ""));
-    console.log(temp);
     let corrections = this.state.corrections;
     corrections.splice(temp, 1);
     this.setState({ corrections: corrections });
