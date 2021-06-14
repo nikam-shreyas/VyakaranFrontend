@@ -1,3 +1,9 @@
+# Implementation Screenshots
+
+<img src="https://github.com/ZeroNP/VyakaranFrontend/blob/master/screenshots/blank.png" alt="blank" />
+<img src="https://github.com/ZeroNP/VyakaranFrontend/blob/master/screenshots/corrections.png" alt="suggest" />
+<img src="https://github.com/ZeroNP/VyakaranFrontend/blob/master/screenshots/all_correct.png" alt="all_correct" />
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -70,7 +76,3 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/a
 ### Deployment
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
