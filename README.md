@@ -1,10 +1,22 @@
-# Implementation Screenshots
+# Vyakaran frontend
+
+React-based front end for Hindi Grammar checker. Inspired by Grammarly. Runs a series of grammatical checks in the document. 
+Features:
+<ol>
+  <li>Traditional document operations like editing (cut, copy, paste)</li>
+  <li>Facility to Print (as pdf) and Download (as .txt) document</li>
+  <li>Virtual Keyboard Support for ease of writing</li>
+</ol>
+
+### Note: This front end is jointly associated with <a href="https://github.com/ZeroNP/VyakaranBackend">Vyakaran backend</a>.
+Vyakaran backend is a 
+## Implementation Screenshots
 
 <img src="https://github.com/ZeroNP/VyakaranFrontend/blob/master/screenshots/blank.png" alt="blank" />
 <img src="https://github.com/ZeroNP/VyakaranFrontend/blob/master/screenshots/corrections.png" alt="suggest" />
 <img src="https://github.com/ZeroNP/VyakaranFrontend/blob/master/screenshots/all_correct.png" alt="all_correct" />
 
-# Getting Started with Create React App
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
