@@ -1,11 +1,5 @@
 import React, { Component } from "react";
-import {
-  MdArrowForward,
-  MdClear,
-  MdExpandLess,
-  MdExpandMore,
-  MdFlag,
-} from "react-icons/md";
+import { MdClear, MdExpandLess, MdExpandMore, MdFlag } from "react-icons/md";
 import { FcCheckmark } from "react-icons/fc";
 class SuggestionCard extends Component {
   state = {};
@@ -43,6 +37,7 @@ class SuggestionCard extends Component {
     document.getElementById(this.props.id + "_expanded_div").style.display =
       "block";
   }
+
   render() {
     return (
       <div className="cardx" id={this.props.id}>
@@ -87,13 +82,13 @@ class SuggestionCard extends Component {
                       }
                     </small>
                     <br />
-                    <small style={{ marginTop: "15px" }}>
-                      <strike className="error_text">{this.props.title}</strike>
-                    </small>{" "}
+                    <span className="error_text" style={{ marginTop: "15px" }}>
+                      {this.props.title}
+                    </span>{" "}
                     →{" "}
-                    <small className="correct_text">
+                    <span className="correct_text">
                       {this.props.correction}
-                    </small>
+                    </span>
                     <br />
                   </div>
                 </div>

@@ -22,6 +22,7 @@ class HomePage extends Component {
     mistakes: 0,
     mistakesLength: 0,
     totalLength: 0,
+    isLoading: false,
   };
   database = null;
   constructor(props) {
@@ -32,11 +33,12 @@ class HomePage extends Component {
     this.deleteSuggestionCard = this.deleteSuggestionCard.bind(this);
     this.checkSentence = this.checkSentence.bind(this);
     this.openAssistant = this.openAssistant.bind(this);
+    this.addToDictionary = this.addToDictionary.bind(this);
   }
 
   componentDidMount() {
-    // Firebase.initializeApp(config);
-    // this.database = Firebase.database();
+    Firebase.initializeApp(config);
+    this.database = Firebase.database();
   }
   replaceContent(input, target, count) {
     // changes to be stored here.
@@ -45,7 +47,11 @@ class HomePage extends Component {
     result = dmp.patch_apply(count, result);
     document.getElementById("content").value = result[0];
   }
-
+  addToDictionary(id, sentence) {
+    console.log("hello", id, sentence);
+    this.database.ref("/sentences/").push(sentence, (err) => console.log(err));
+    this.deleteSuggestionCard(id);
+  }
   onEditTitle(e) {
     document.getElementsByTagName("title")[0].innerHTML = e.target.value;
   }
@@ -69,7 +75,7 @@ class HomePage extends Component {
     let test = [];
     this.setState({ isLoading: true });
     // नमस्तेंे। मैं हो बोर रहा हूँ। ख़ुदा हाफ़ीज़।  ौन जाने? मजेंे करो।
-    fetch("http://0e9fc868b198.ngrok.io/suggest ", {
+    fetch("http://localhost:9696/suggest", {
       method: "POST",
       body: JSON.stringify({
         input_sentence: sentence,
@@ -225,9 +231,15 @@ class HomePage extends Component {
             <div className="doc_title mx-3 mt-2 suggestions_title">
               All suggestions
             </div>
-            {this.state.isLoading ? <>Loading...</> : <></>}
+            {this.state.isLoading ? (
+              <div className="ml-3 mt-5 text-primary">
+                <div class="loader"></div> Loading Suggestions...
+              </div>
+            ) : (
+              <></>
+            )}
             <div
-              className="suggestions_content m-1 mt-3"
+              className="suggestions_content m-1 mt-5"
               id="suggestions_content"
             >
               {this.state.corrections.map((e, i) => (
@@ -239,9 +251,10 @@ class HomePage extends Component {
                   id={"suggestion_" + i}
                   deleteSuggestionCard={this.deleteSuggestionCard}
                   replaceContent={this.replaceContent}
+                  addToDictionary={this.addToDictionary}
                 />
               ))}
-              {this.state.corrections.length === 0 ? (
+              {this.state.corrections.length === 0 && !this.state.isLoading ? (
                 document.getElementById("content").value === "" ? (
                   <>
                     <img src={img1} width="100%" alt="placeholder" />
