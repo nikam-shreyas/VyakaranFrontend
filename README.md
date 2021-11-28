@@ -9,7 +9,7 @@ Features:
 </ol>
 
 ### Note: This front end is jointly associated with <a href="https://github.com/ZeroNP/VyakaranBackend">Vyakaran backend</a>.
-Vyakaran backend is a 
+
 ## Implementation Screenshots
 
 <img src="https://github.com/ZeroNP/VyakaranFrontend/blob/master/screenshots/blank.png" alt="blank" />
